@@ -15,7 +15,8 @@ class CalculatorViewController: UIViewController {
         twentyPctButton.isSelected = false
         sender.isSelected = true
         guard let title = sender.currentTitle else { return }
-        values.precent = Float(title.dropLast())! / 100.0
+        values.precent = Double(title.dropLast())! / 100.0
+        billTextField.endEditing(true)
     }
     
     @IBAction func stepperValueChanged(_ sender: UIStepper) {
@@ -24,12 +25,19 @@ class CalculatorViewController: UIViewController {
     }
     
     @IBAction func calculatePressed(_ sender: UIButton) {
-        guard let bill = Double(billTextField.text!) else {
+        guard let bill = Double(billTextField.text!.replacingOccurrences(of: ",", with: ".")) else {
             return billTextField.text = ""
         }
         values.billTotal = bill
-        print(values.billTotal)
+        self.performSegue(withIdentifier: "goToResult", sender: self)
     }
-
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        guard segue.identifier == "goToResult" else { return }
+        guard let destination = segue.destination as? ResultsViewController else { return }
+        destination.numOfPeople = values.numberOfPeople
+        destination.precent = values.precent
+        destination.total = values.calculate()
+    }
 }
 

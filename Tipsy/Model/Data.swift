@@ -1,6 +1,11 @@
 
 struct Data {
-    var precent: Float = 0
+    var precent: Double = 0
     var numberOfPeople: Int = 0
     var billTotal : Double = 0
+    
+    mutating func calculate() -> String {
+        String(format: "%.2f", (billTotal * (1.0 + precent)) / Double(numberOfPeople))
+    }
+    
 }
